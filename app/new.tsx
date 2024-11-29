@@ -1,34 +1,42 @@
 import { PlantlyButton } from "@/components/PlantlyButton";
 import { PlantlyImage } from "@/components/PlantlyImage";
+import { usePlantStore } from "@/store/plantsStore";
 import { theme } from "@/theme";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function NewScreen() {
-  const [name, setName] = useState<string>();
-  const [days, setDays] = useState<string>();
+  const router = useRouter()
+  const addPlant = usePlantStore((state) => state.addPlant)
+
+  const [name, setName] = useState<string>()
+  const [days, setDays] = useState<string>()
 
   const handleSubmit = () => {
     if (!name) {
-      return Alert.alert("Validation Error", "Give your plant a name");
+      return Alert.alert("Validation Error", "Give your plant a name")
     }
 
     if (!days) {
       return Alert.alert(
         "Validation Error",
         `How often does ${name} need to be watered?`,
-      );
+      )
     }
 
     if (Number.isNaN(Number(days))) {
       return Alert.alert(
         "Validation Error",
         "Watering frequency must be a be a number",
-      );
+      )
     }
 
-    console.log("Adding plant", name, days);
+    console.log("Adding plant", name, days)
+
+    addPlant(name, Number(days))
+    router.navigate("/")
   };
 
   return (
